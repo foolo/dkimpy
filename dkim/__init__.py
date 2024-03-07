@@ -302,7 +302,7 @@ def validate_signature_fields(sig, mandatory_fields=[b'v', b'a', b'b', b'bh', b'
     try:
         str(sig[b'd'], 'ascii')
         # No specials, which is close enough
-        if re.findall(b"[\(\)<>\[\]:;@\\,]", sig[b'd']):
+        if re.findall(rb"[\(\)<>\[\]:;@\\,]", sig[b'd']):
             raise ValidationError("d= value is not valid (%s)" % sig[b'd'])
     except UnicodeDecodeError as e:
         # Not an ASCII domain
