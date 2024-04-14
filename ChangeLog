@@ -1,3 +1,8 @@
+2024-04-14 Version 1.1.6
+   - Use raw byte string for regex; fixes SyntaxWarning in Python 3.12 due to
+     invalid escape sequence (LP: #2049518)  - Thanks to Simon Chopin for the
+     fix
+
 2023-07-28 Version 1.1.5
    - Use dns.resolver.resolve instead of dns.resolver.query due to deprecation
      (LP: 2028783) - Thanks to Pedro Vicente for the report and the fix
