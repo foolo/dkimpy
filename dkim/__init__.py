@@ -760,7 +760,7 @@ class DomainSigner(object):
     # generalized to check for extras of other singleton headers.
     if b'from' in include_headers:
       include_headers.append(b'from')
-    h = HashThrough(hasher(), self.debug_content)
+    h = HashThrough(hasher(), True)
 
     headers = canon_policy.canonicalize_headers(self.headers)
     self.signed_headers = hash_headers(
@@ -770,7 +770,7 @@ class DomainSigner(object):
     signature = base64.b64decode(re.sub(br"\s+", b"", sig[b'b']))
     if self.ktag == b'rsa':
         print("RSA digest", h.digest())
-        infoOut['rsa_digest'] = h.digest()
+        infoOut['signed_data'] = h.hashed()
         try:
             res = RSASSA_PKCS1_v1_5_verify(h, signature, self.pk)
             self.logger.debug("%s valid: %s" % (sig_header[0], res))
