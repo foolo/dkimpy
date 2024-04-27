@@ -40,6 +40,8 @@ import sys
 import time
 import binascii
 
+import dns.name
+
 # Set to False to not use async functions even though aiodns is installed.
 USE_ASYNC = True
 
@@ -793,6 +795,8 @@ class DomainSigner(object):
   #: @param dnsfunc: interface to dns
   def verify_sig(self, sig, include_headers, sig_header, dnsfunc):
     name = sig[b's'] + b"._domainkey." + sig[b'd'] + b"."
+    import dns.name
+    name = dns.name.from_text(name.decode('utf-8'))
     try:
       self.pk, self.keysize, self.ktag, self.seqtlsrpt = load_pk_from_dns(name,
               dnsfunc, timeout=self.timeout)
