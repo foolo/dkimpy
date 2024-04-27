@@ -769,7 +769,6 @@ class DomainSigner(object):
         self.logger.debug("signed for %s: %r" % (sig_header[0], h.hashed()))
     signature = base64.b64decode(re.sub(br"\s+", b"", sig[b'b']))
     if self.ktag == b'rsa':
-        print("RSA digest", h.digest())
         infoOut['signed_data'] = h.hashed()
         try:
             res = RSASSA_PKCS1_v1_5_verify(h, signature, self.pk)
