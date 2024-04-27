@@ -715,7 +715,7 @@ class DomainSigner(object):
 
     return header_value
 
-  def verify_sig_process(self, sig, include_headers, sig_header, dnsfunc):
+  def verify_sig_process(self, sig, include_headers, sig_header, dnsfunc, infoOut):
     """Non-async sensitive verify_sig elements.  Separated to avoid async code
     duplication."""
     # RFC 8460 MAY ignore signatures without tlsrpt Service Type
@@ -769,6 +769,8 @@ class DomainSigner(object):
         self.logger.debug("signed for %s: %r" % (sig_header[0], h.hashed()))
     signature = base64.b64decode(re.sub(br"\s+", b"", sig[b'b']))
     if self.ktag == b'rsa':
+        print("RSA digest", h.digest())
+        infoOut['rsa_digest'] = h.digest()
         try:
             res = RSASSA_PKCS1_v1_5_verify(h, signature, self.pk)
             self.logger.debug("%s valid: %s" % (sig_header[0], res))
@@ -793,7 +795,7 @@ class DomainSigner(object):
   #: @param include_headers: headers to validate b= signature against
   #: @param sig_header: (header_name, header_value)
   #: @param dnsfunc: interface to dns
-  def verify_sig(self, sig, include_headers, sig_header, dnsfunc):
+  def verify_sig(self, sig, include_headers, sig_header, dnsfunc, infoOut):
     name = sig[b's'] + b"._domainkey." + sig[b'd'] + b"."
     import dns.name
     name = dns.name.from_text(name.decode('utf-8'))
@@ -810,7 +812,7 @@ class DomainSigner(object):
       self.logger.error('DnsTimeoutError: Domain: {0} Selector: {1} Error message: {2}'.format(
           sig[b'd'], sig[b's'], e))
       return False
-    return self.verify_sig_process(sig, include_headers, sig_header, dnsfunc)
+    return self.verify_sig_process(sig, include_headers, sig_header, dnsfunc, infoOut)
 
 
 #: Hold messages and options during DKIM signing and verification.
@@ -967,11 +969,11 @@ class DKIM(DomainSigner):
   #: for a DNS domain.  The default uses dnspython or pydns.
   #: @return: True if signature verifies or False otherwise
   #: @raise DKIMException: when the message, signature, or key are badly formed
-  def verify(self,idx=0,dnsfunc=get_txt):
+  def verify(self,idx=0,dnsfunc=get_txt, infoOut=None):
     prep = self.verify_headerprep(idx)
     if prep:
         sig, include_headers, sigheaders = prep
-        return self.verify_sig(sig, include_headers, sigheaders[idx], dnsfunc)
+        return self.verify_sig(sig, include_headers, sigheaders[idx], dnsfunc, infoOut)
     return False # No signature
 
 
