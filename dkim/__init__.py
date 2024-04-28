@@ -750,9 +750,10 @@ class DomainSigner(object):
       except TypeError as e:
           raise MessageFormatError(str(e))
       if bodyhash != bh:
-          raise ValidationError(
-              "body hash mismatch (got %s, expected %s)" %
-              (base64.b64encode(bodyhash), sig[b'bh']))
+        #   raise ValidationError(
+        #       "body hash mismatch (got %s, expected %s)" %
+        #       (base64.b64encode(bodyhash), sig[b'bh']))
+        infoOut['body_hash_mismatch'] = True
 
     # address bug#644046 by including any additional From header
     # fields when verifying.  Since there should be only one From header,
