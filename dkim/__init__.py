@@ -715,7 +715,7 @@ class DomainSigner(object):
 
     return header_value
 
-  def verify_sig_process(self, sig, include_headers, sig_header, dnsfunc, infoOut):
+  def verify_sig_process(self, sig, include_headers, sig_header, infoOut):
     """Non-async sensitive verify_sig elements.  Separated to avoid async code
     duplication."""
     # RFC 8460 MAY ignore signatures without tlsrpt Service Type
@@ -964,17 +964,16 @@ class DKIM(DomainSigner):
   #: Verify a DKIM signature.
   #: @type idx: int
   #: @param idx: which signature to verify.  The first (topmost) signature is 0.
-  #: @type dnsfunc: callable
   #: @param dnsfunc: an option function to lookup TXT resource records
   #: for a DNS domain.  The default uses dnspython or pydns.
   #: @return: True if signature verifies or False otherwise
   #: @raise DKIMException: when the message, signature, or key are badly formed
-  def verify(self,idx=0,dnsfunc=get_txt, infoOut=None):
+  def verify(self,idx=0, infoOut=None):
     prep = self.verify_headerprep(idx)
     if prep:
         sig, include_headers, sigheaders = prep
         #return self.verify_sig(sig, include_headers, sigheaders[idx], dnsfunc, infoOut)
-        return self.verify_sig_process(sig, include_headers, sigheaders[idx], dnsfunc, infoOut)
+        return self.verify_sig_process(sig, include_headers, sigheaders[idx], infoOut)
     return False # No signature
 
 
