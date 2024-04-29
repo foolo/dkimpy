@@ -40,8 +40,6 @@ import sys
 import time
 import binascii
 
-import dns.name
-
 # Set to False to not use async functions even though aiodns is installed.
 USE_ASYNC = True
 
