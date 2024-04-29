@@ -768,26 +768,26 @@ class DomainSigner(object):
         h, canon_policy, headers, include_headers, sig_header, sig)
     if self.debug_content:
         self.logger.debug("signed for %s: %r" % (sig_header[0], h.hashed()))
-    signature = base64.b64decode(re.sub(br"\s+", b"", sig[b'b']))
-    if self.ktag == b'rsa':
-        infoOut['signed_data'] = h.hashed()
-        try:
-            res = RSASSA_PKCS1_v1_5_verify(h, signature, self.pk)
-            self.logger.debug("%s valid: %s" % (sig_header[0], res))
-            if res and self.keysize < self.minkey:
-                raise KeyFormatError("public key too small: %d" % self.keysize)
-            return res
-        except (TypeError,DigestTooLargeError) as e:
-            raise KeyFormatError("digest too large for modulus: %s"%e)
-    elif self.ktag == b'ed25519':
-        try:
-            self.pk.verify(h.digest(), signature)
-            self.logger.debug("%s valid" % (sig_header[0]))
-            return True
-        except (nacl.exceptions.BadSignatureError) as e:
-            return False
-    else:
-        raise UnknownKeyTypeError(self.ktag)
+    # signature = base64.b64decode(re.sub(br"\s+", b"", sig[b'b']))
+    infoOut['signed_data'] = h.hashed()
+    # if self.ktag == b'rsa':
+    #     try:
+    #         res = RSASSA_PKCS1_v1_5_verify(h, signature, self.pk)
+    #         self.logger.debug("%s valid: %s" % (sig_header[0], res))
+    #         if res and self.keysize < self.minkey:
+    #             raise KeyFormatError("public key too small: %d" % self.keysize)
+    #         return res
+    #     except (TypeError,DigestTooLargeError) as e:
+    #         raise KeyFormatError("digest too large for modulus: %s"%e)
+    # elif self.ktag == b'ed25519':
+    #     try:
+    #         self.pk.verify(h.digest(), signature)
+    #         self.logger.debug("%s valid" % (sig_header[0]))
+    #         return True
+    #     except (nacl.exceptions.BadSignatureError) as e:
+    #         return False
+    # else:
+    #     raise UnknownKeyTypeError(self.ktag)
 
 
   # Abstract helper method to verify a signed header
@@ -973,7 +973,8 @@ class DKIM(DomainSigner):
     prep = self.verify_headerprep(idx)
     if prep:
         sig, include_headers, sigheaders = prep
-        return self.verify_sig(sig, include_headers, sigheaders[idx], dnsfunc, infoOut)
+        #return self.verify_sig(sig, include_headers, sigheaders[idx], dnsfunc, infoOut)
+        return self.verify_sig_process(sig, include_headers, sigheaders[idx], dnsfunc, infoOut)
     return False # No signature
 
 
