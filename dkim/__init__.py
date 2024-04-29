@@ -328,11 +328,11 @@ def validate_signature_fields(sig, mandatory_fields=[b'v', b'a', b'b', b'bh', b'
         if re.match(br"\d+$", sig[b't']) is None:
             raise ValidationError(
                 "t= value is not a decimal integer (%s)" % sig[b't'])
-        now = int(time.time())
-        slop = 36000 # 10H leeway for mailers with inaccurate clocks
-        t_sign = int(sig[b't'])
-        if t_sign > now + slop:
-            raise ValidationError("t= value is in the future (%s)" % sig[b't'])
+        # now = int(time.time())
+        # slop = 36000 # 10H leeway for mailers with inaccurate clocks
+        # t_sign = int(sig[b't'])
+        # if t_sign > now + slop:
+        #     raise ValidationError("t= value is in the future (%s)" % sig[b't'])
 
     if b'v' in sig and sig[b'v'] != b"1":
         raise ValidationError("v= value is not 1 (%s)" % sig[b'v'])
@@ -341,16 +341,16 @@ def validate_signature_fields(sig, mandatory_fields=[b'v', b'a', b'b', b'bh', b'
         if re.match(br"\d+$", sig[b'x']) is None:
             raise ValidationError(
               "x= value is not a decimal integer (%s)" % sig[b'x'])
-        x_sign = int(sig[b'x'])
-        now = int(time.time())
-        slop = 36000 # 10H leeway for mailers with inaccurate clocks
-        if x_sign < now - slop:
-            raise ValidationError(
-                "x= value is past (%s)" % sig[b'x'])
-            if x_sign < t_sign:
-                raise ValidationError(
-                    "x= value is less than t= value (x=%s t=%s)" %
-                    (sig[b'x'], sig[b't']))
+        # x_sign = int(sig[b'x'])
+        # now = int(time.time())
+        # slop = 36000 # 10H leeway for mailers with inaccurate clocks
+        # if x_sign < now - slop:
+        #     raise ValidationError(
+        #         "x= value is past (%s)" % sig[b'x'])
+        #     if x_sign < t_sign:
+        #         raise ValidationError(
+        #             "x= value is less than t= value (x=%s t=%s)" %
+        #             (sig[b'x'], sig[b't']))
 
 
 def rfc822_parse(message):
