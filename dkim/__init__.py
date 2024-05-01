@@ -738,11 +738,11 @@ class DomainSigner(object):
       if b'l' in sig and not self.tlsrpt:
         body = body[:int(sig[b'l'])]
       h.update(body)
-      if self.debug_content:
-          self.logger.debug("body hashed: %r" % h.hashed())
+    #   if self.debug_content:
+    #       self.logger.debug("body hashed: %r" % h.hashed())
       bodyhash = h.digest()
 
-      self.logger.debug("bh: %s" % base64.b64encode(bodyhash))
+      #self.logger.debug("bh: %s" % base64.b64encode(bodyhash))
       try:
           bh = base64.b64decode(re.sub(br"\s+", b"", sig[b'bh']))
       except TypeError as e:
@@ -764,8 +764,8 @@ class DomainSigner(object):
     headers = canon_policy.canonicalize_headers(self.headers)
     self.signed_headers = hash_headers(
         h, canon_policy, headers, include_headers, sig_header, sig)
-    if self.debug_content:
-        self.logger.debug("signed for %s: %r" % (sig_header[0], h.hashed()))
+    # if self.debug_content:
+    #     self.logger.debug("signed for %s: %r" % (sig_header[0], h.hashed()))
     # signature = base64.b64decode(re.sub(br"\s+", b"", sig[b'b']))
     infoOut['signed_data'] = h.hashed()
     # if self.ktag == b'rsa':
@@ -949,7 +949,7 @@ class DKIM(DomainSigner):
     except InvalidTagValueList as e:
         raise MessageFormatError(e)
 
-    self.logger.debug("sig: %r" % sig)
+    #self.logger.debug("sig: %r" % sig)
 
     validate_signature_fields(sig)
     self.domain = sig[b'd']
